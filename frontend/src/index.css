@@ -1,0 +1,346 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Leaflet CSS (required for maps) */
+@import 'leaflet/dist/leaflet.css';
+
+/* Custom base styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    @apply h-full;
+  }
+  
+  body {
+    @apply h-full bg-gray-50 font-sans text-gray-900 antialiased;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #root {
+    @apply h-full;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+  }
+  
+  .btn-danger {
+    @apply btn bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500;
+  }
+  
+  .btn-success {
+    @apply btn bg-success-600 text-white hover:bg-success-700 focus:ring-success-500;
+  }
+  
+  .btn-outline {
+    @apply btn border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500;
+  }
+  
+  .input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+  }
+  
+  .map-container {
+    @apply relative w-full h-full rounded-lg overflow-hidden shadow-lg;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(156 163 175) rgb(243 244 246);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgb(243 244 246);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(156 163 175);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(107 114 128);
+  }
+}
+
+/* Dark mode styles */
+.dark {
+  @apply bg-gray-900 text-gray-100;
+}
+
+.dark .card {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .input {
+  @apply bg-gray-800 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-primary-400;
+}
+
+/* Custom map styles */
+.leaflet-container {
+  @apply h-full w-full;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg shadow-lg;
+}
+
+.leaflet-popup-content {
+  @apply text-sm;
+}
+
+/* SOS Button pulse animation */
+.sos-pulse {
+  animation: sos-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes sos-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Loading spinner */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Night mode indicator */
+.night-mode-badge {
+  @apply animate-pulse-slow;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .mobile-padding {
+    @apply px-4 py-2;
+  }
+}
+
+/* Custom route marker styles */
+.custom-route-marker {
+  background: none !important;
+  border: none !important;
+}
+
+/* Leaflet routing machine overrides */
+.leaflet-routing-container {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  font-family: 'Inter', sans-serif !important;
+  max-width: 300px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  z-index: 1000 !important;
+}
+
+.leaflet-routing-alt {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-routing-instruction {
+  padding: 8px 12px !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-routing-summary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  padding: 12px !important;
+  border-radius: 12px 12px 0 0 !important;
+  font-weight: 600 !important;
+}
+
+.leaflet-routing-geocoders {
+  display: none !important;
+}
+
+/* Prevent layer removal errors */
+.leaflet-routing-container .leaflet-routing-alternatives-container {
+  pointer-events: none;
+}
+
+.leaflet-routing-container .leaflet-routing-alternatives-container * {
+  pointer-events: auto;
+}
+
+/* Fix potential routing line conflicts */
+.leaflet-overlay-pane .leaflet-routing-line {
+  pointer-events: visibleStroke !important;
+}
+
+.leaflet-overlay-pane .leaflet-routing-alt-line {
+  pointer-events: visibleStroke !important;
+}
+
+/* Route line styles */
+.leaflet-interactive {
+  cursor: pointer;
+}
+
+.leaflet-popup {
+  margin-bottom: 20px;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Night mode adjustments */
+.night-mode .leaflet-routing-container {
+  background: rgba(30, 30, 30, 0.95) !important;
+  color: white !important;
+}
+
+.night-mode .leaflet-routing-summary {
+  background: linear-gradient(135deg, #4c1d95, #312e81) !important;
+}
+
+.night-mode .leaflet-routing-instruction {
+  color: #e5e7eb !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix for Leaflet marker icons */
+.leaflet-default-icon-path {
+  background-image: url('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png');
+}
+
+/* Animation for route drawing */
+@keyframes route-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-line {
+  animation: route-draw 2s ease-in-out;
+}
+
+/* Custom styles for the app */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.night-mode-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Route control positioning */
+.leaflet-routing-container {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  z-index: 1000;
+}
+
+/* Make sure route lines are visible */
+.leaflet-overlay-pane svg {
+  pointer-events: auto;
+}
+
+.leaflet-overlay-pane path {
+  pointer-events: visibleStroke;
+}
+
+/* Button hover effects */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200;
+}
+
+.btn-success {
+  @apply bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 

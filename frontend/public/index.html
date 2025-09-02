@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Safe Route Navigator - Empowering users with technology for safer journeys. Find the safest routes based on real-time crime data and community safety ratings." />
+    <meta name="keywords" content="personal safety, route planning, crime data, safety ratings, emergency alerts, SOS, navigation" />
+    <meta name="author" content="Shivansh Gupta" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Safe Route Navigator - Safety Navigation App" />
+    <meta property="og:description" content="Find the safest routes based on real-time crime data and community safety ratings." />
+    <meta property="og:url" content="https://saferoute.app" />
+    <meta property="og:site_name" content="Safe Route Navigator" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Safe Route Navigator - Safety Navigation App" />
+    <meta name="twitter:description" content="Find the safest routes based on real-time crime data and community safety ratings." />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <title>Safe Route Navigator - Safety Navigation App</title>
+  </head>
+  <body>
+    <noscript>
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; text-align: center; background-color: #f9fafb;">
+        <h1 style="color: #ef4444; margin-bottom: 16px;">JavaScript Required</h1>
+        <p style="color: #6b7280; max-width: 400px; line-height: 1.5;">
+          Safe Route Navigator requires JavaScript to provide interactive maps, real-time safety data, and emergency features. 
+          Please enable JavaScript in your browser to use this application.
+        </p>
+      </div>
+    </noscript>
+    <div id="root"></div>
+    
+    <!-- Performance monitoring (you can add analytics here) -->
+    <script>
+      // Performance monitoring
+      window.addEventListener('load', function() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        }
+      });
+    </script>
+  </body>
+</html> 
