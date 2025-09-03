@@ -76,7 +76,7 @@ Safe Route Navigator empowers users to make informed decisions about their route
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ShivanshGupta24/SafeRouteNavigator.git
+git clone https://github.com/Vijay8143/Safe-Route-Finder.git
 cd SafeRouteNavigator
 ```
 
@@ -182,23 +182,3 @@ SafeRouteNavigator/
 - SQLite for development (included)
 - Supports MySQL/PostgreSQL for production
 - Automatic migrations and seeding
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/NewFeature`)
-3. Commit your changes (`git commit -m 'Add NewFeature'`)
-4. Push to the branch (`git push origin feature/NewFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Support
-
-For support, create an issue in the GitHub repository or contact the development team.
-
----
-
-**Safe Route Navigator** - Empowering users with technology for safer journeys. 
