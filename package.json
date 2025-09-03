@@ -1,0 +1,30 @@
+{
+  "name": "safe-route-navigator",
+  "version": "1.0.0",
+  "description": "Full-stack Safe Route Navigator web app for personal safety",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd backend && npm run dev",
+    "client:dev": "cd frontend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "server:start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "keywords": [
+    "safety",
+    "navigation",
+    "personal-safety",
+    "crime-data",
+    "react",
+    "express"
+  ],
+  "author": "Shivansh Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.9.0"
+  }
+}
