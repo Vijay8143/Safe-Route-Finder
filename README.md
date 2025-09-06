@@ -51,7 +51,7 @@ Safe Route Navigator empowers users to make informed decisions about their route
 - Multi-modal route planning (walking, cycling, driving)
 - Real-time GPS tracking
 - Route safety analysis
-- Custom waypoint support
+
 
 ### User Features
 - Secure user authentication
@@ -63,7 +63,7 @@ Safe Route Navigator empowers users to make informed decisions about their route
 - Night mode with enhanced safety features
 - Responsive design for all devices
 - Real-time notifications
-- Offline capability support
+
 
 ## How to Run
 
