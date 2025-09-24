@@ -95,21 +95,14 @@ REM Check Java
 java -version >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Java is not installed or not in PATH
-    echo Please install Java 11+ from https://adoptium.net/ or https://www.java.com/
     pause
     exit /b 1
 )
-
-REM Check for jenkins.war in current script folder
 if not exist "%~dp0jenkins.war" (
     echo ERROR: jenkins.war not found in project root (%~dp0)
-    echo Download jenkins.war from https://www.jenkins.io/download/ and place it next to this script.
     pause
     exit /b 1
 )
-
-REM Start Jenkins in new window serving on port 8080
-start "Jenkins" cmd /k "cd /d "%~dp0" && java -jar jenkins.war --httpPort=8080""
-
+start "Jenkins" cmd /k "cd /d "%~dp0" && java -jar jenkins.war --httpPort=8080"
 echo Jenkins should be starting on http://localhost:8080
 pause

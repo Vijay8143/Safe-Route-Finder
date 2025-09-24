@@ -20,7 +20,6 @@ const seedDatabase = async () => {
     await sequelize.sync({ force: false, alter: true });
     
     // Delete existing demo user if it exists to recreate it
-    console.log('🔍 Checking for existing demo user...');
     await User.destroy({ where: { email: 'demo@saferoute.com' } });
     
     // Create demo user with consistent hashing

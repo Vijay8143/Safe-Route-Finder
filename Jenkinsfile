@@ -48,7 +48,8 @@ pipeline {
               sh 'npm install --no-audit --no-fund --legacy-peer-deps'
             }
           }
-          sh 'npm run build --if-present'
+          // Prevent Create React App from treating warnings as errors in CI agents
+          sh 'CI=false npm run build --if-present'
         }
       }
     }
