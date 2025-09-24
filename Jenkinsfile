@@ -41,11 +41,11 @@ pipeline {
         dir('frontend') {
           script {
             if (fileExists('package-lock.json') || fileExists('npm-shrinkwrap.json')) {
-              echo "Frontend: using npm ci (lockfile found)"
-              sh 'npm ci --no-audit --no-fund'
+              echo "Frontend: using npm ci (lockfile found) with legacy-peer-deps"
+              sh 'npm ci --no-audit --no-fund --legacy-peer-deps'
             } else {
-              echo "Frontend: no lockfile — using npm install"
-              sh 'npm install --no-audit --no-fund'
+              echo "Frontend: no lockfile — using npm install with legacy-peer-deps"
+              sh 'npm install --no-audit --no-fund --legacy-peer-deps'
             }
           }
           sh 'npm run build --if-present'
