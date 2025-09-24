@@ -1,5 +1,6 @@
 const { sequelize, testConnection } = require('../config/database');
 const { User, Crime, Rating } = require('../models');
+const bcrypt = require('bcryptjs');
 
 const setupDatabase = async () => {
   try {
@@ -16,9 +17,10 @@ const setupDatabase = async () => {
     console.log('📊 Inserting sample data...');
     
     // Sample user
+    const hashed = await bcrypt.hash('Demo123!', 12);
     const sampleUser = await User.create({
       email: 'demo@saferoute.com',
-      password_hash: 'Demo123!',
+      password_hash: hashed,
       name: 'Demo User',
       phone: '+1234567890',
       emergency_contact: 'emergency@saferoute.com'
@@ -116,4 +118,4 @@ const setupDatabase = async () => {
   }
 };
 
-setupDatabase(); 
+setupDatabase();

@@ -25,9 +25,10 @@ const seedDatabase = async () => {
     
     // Create demo user with consistent hashing
     console.log('👤 Creating demo user...');
+    const hashedPassword = await bcrypt.hash('Demo123!', 12);
     const demoUser = await User.create({
       email: 'demo@saferoute.com',
-      password_hash: 'Demo123!', // This will be hashed by the model hook
+      password_hash: hashedPassword,
       name: 'Demo User',
       phone: '+1234567890',
       emergency_contact: '+1987654321',
@@ -122,25 +123,25 @@ const seedDatabase = async () => {
         {
           lat: 40.7128,
           lng: -74.0060,
-          safety_score: 7,
-          time_of_day: 'day',
-          comments: 'Generally safe during daytime with good foot traffic',
+          safety_score: 4,
+          time_of_day: 'morning',
+          comment: 'Generally safe during daytime with good foot traffic',
           user_id: demoUser.id
         },
         {
           lat: 40.7589,
           lng: -73.9851,
-          safety_score: 4,
+          safety_score: 3,
           time_of_day: 'night',
-          comments: 'Be cautious at night, limited lighting',
+          comment: 'Be cautious at night, limited lighting',
           user_id: demoUser.id
         },
         {
           lat: 40.7505,
           lng: -73.9934,
-          safety_score: 8,
-          time_of_day: 'day',
-          comments: 'Very busy area with good security presence',
+          safety_score: 5,
+          time_of_day: 'afternoon',
+          comment: 'Busy area with good security presence',
           user_id: demoUser.id
         }
       ];
@@ -164,4 +165,4 @@ const seedDatabase = async () => {
   }
 };
 
-module.exports = { seedDatabase }; 
+module.exports = { seedDatabase };

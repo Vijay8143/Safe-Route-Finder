@@ -211,9 +211,9 @@ const startServer = async () => {
     
     // Start server
     app.listen(PORT, () => {
-      console.log('=' .repeat(80));
+      console.log('='.repeat(80));
       console.log('🚀 Safe Route Navigator API server running globally! 🌍');
-      console.log('=' .repeat(80));
+      console.log('='.repeat(80));
       console.log(`🌐 Port: ${PORT}`);
       console.log(`🔧 Environment: ${process.env.NODE_ENV}`);
       console.log(`💾 Mode: ${isDemoMode ? 'Demo (No DB required)' : 'Full Database'}`);
@@ -235,7 +235,7 @@ const startServer = async () => {
       console.log('  ✅ SOS and emergency features');
       console.log('');
       console.log('🎉 Ready to navigate safely ANYWHERE in the world!');
-      console.log('=' .repeat(80));
+      console.log('='.repeat(80));
     });
     
   } catch (error) {
@@ -272,4 +272,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-startServer(); 
+startServer();
