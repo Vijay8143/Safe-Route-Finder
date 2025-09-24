@@ -21,8 +21,16 @@ pipeline {
     stage('Backend: install & test') {
       steps {
         dir('backend') {
-          sh 'npm ci --no-audit --no-fund'
-          // run linters/tests if available
+          script {
+            if (fileExists('package-lock.json') || fileExists('npm-shrinkwrap.json')) {
+              echo "Using npm ci (lockfile found)"
+              sh 'npm ci --no-audit --no-fund'
+            } else {
+              echo "No lockfile found — using npm install"
+              sh 'npm install --no-audit --no-fund'
+            }
+          }
+          // run linters/tests if available (do not fail pipeline on tests by default)
           sh 'npm test || true'
         }
       }
@@ -31,7 +39,15 @@ pipeline {
     stage('Frontend: install & build') {
       steps {
         dir('frontend') {
-          sh 'npm ci --no-audit --no-fund'
+          script {
+            if (fileExists('package-lock.json') || fileExists('npm-shrinkwrap.json')) {
+              echo "Frontend: using npm ci (lockfile found)"
+              sh 'npm ci --no-audit --no-fund'
+            } else {
+              echo "Frontend: no lockfile — using npm install"
+              sh 'npm install --no-audit --no-fund'
+            }
+          }
           sh 'npm run build --if-present'
         }
       }
