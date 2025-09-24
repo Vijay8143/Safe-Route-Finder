@@ -67,7 +67,8 @@ pipeline {
       echo "Pipeline failed"
     }
     always {
-      // cleanup or notifications can go here
+      // minimal step so Declarative pipeline is valid
+      echo "Pipeline finished at: ${new Date()}"
     }
   }
 }
