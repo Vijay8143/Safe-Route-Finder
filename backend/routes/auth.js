@@ -17,7 +17,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
     callbackURL: '/auth/google/callback'
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      // Handle Google user data, e.g., upsert to Supabase profiles table
+      
       const { data, error } = await supabase
         .from('profiles')
         .upsert({ id: profile.id, email: profile.emails?.[0]?.value, name: profile.displayName });
