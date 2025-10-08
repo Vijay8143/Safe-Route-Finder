@@ -1,0 +1,7 @@
+{
+  "watch": ["src", "."],
+  "ext": "js,json",
+  "ignore": ["node_modules", "build", "dist"],
+  "legacyWatch": true,
+  "delay": "2500"
+}

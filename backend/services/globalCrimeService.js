@@ -1,4 +1,11 @@
-const axios = require('axios');
+let axios;
+try {
+	axios = require('axios');
+} catch (err) {
+	console.error("\nMissing dependency 'axios' in backend. Run:\n  cd c:\\Users\\vijay\\OneDrive\\Desktop\\Safe-Route-Finder\\backend && npm install\nThen restart the server.\n");
+	throw err;
+}
+
 const { Crime } = require('../models');
 const { Op } = require('sequelize');
 
@@ -364,4 +371,4 @@ class GlobalCrimeService {
   }
 }
 
-module.exports = new GlobalCrimeService(); 
+module.exports = new GlobalCrimeService();

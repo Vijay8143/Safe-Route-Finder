@@ -2,12 +2,54 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const passport = require('passport'); // <-- added
 require('dotenv').config({ path: './config.env' });
 
 const { sequelize, testConnection } = require('./config/database');
 const { seedDatabase } = require('./seedDatabase');
+const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
+
+// ---- Replace direct createClient(...) with a guarded initializer ----
+const rawSupabaseUrl = process.env.SUPABASE_URL && process.env.SUPABASE_URL.trim();
+const rawSupabaseKey = process.env.SUPABASE_KEY && process.env.SUPABASE_KEY.trim();
+
+function makeSupabaseStub() {
+	// any access to the stub will throw a descriptive error so requests fail fast but app won't crash at startup
+	const handler = {
+		get: () => {
+			return () => {
+				throw new Error(
+					'Supabase client is not initialized. Set SUPABASE_URL and SUPABASE_KEY in your environment or .env file.'
+				);
+			};
+		}
+	};
+	return new Proxy({}, handler);
+}
+
+let supabase;
+if (rawSupabaseUrl && /^https?:\/\//i.test(rawSupabaseUrl)) {
+	try {
+		supabase = createClient(rawSupabaseUrl, rawSupabaseKey);
+		console.info('Supabase client initialized.');
+	} catch (err) {
+		console.warn('Failed to initialize Supabase client:', err.message || err);
+		supabase = makeSupabaseStub();
+	}
+} else {
+	console.warn('SUPABASE_URL missing or invalid. Supabase client will not be initialized.');
+	supabase = makeSupabaseStub();
+}
+
+// JWT secret (store in env vars securely)
+const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret';
 
 const app = express();
+
+// Trust proxies (needed for express-rate-limit to work with X-Forwarded-For from frontend proxy)
+app.set('trust proxy', true);
+
 const PORT = process.env.PORT || 5000;
 
 // Global state for demo mode
@@ -39,9 +81,29 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Initialize passport middleware so strategy-based routes work
+app.use(passport.initialize()); // <-- added
+
 // Demo mode middleware
 app.use((req, res, next) => {
   req.isDemoMode = isDemoMode;
+  next();
+});
+
+// Add auth routes
+const authRoutes = require('./routes/auth');
+app.use('/auth', authRoutes);
+
+// Middleware to verify JWT on protected routes
+app.use('/api', (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (token) {
+    try {
+      req.user = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+  }
   next();
 });
 
@@ -273,3 +335,6 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
+
+// Export supabase and JWT_SECRET for use in other modules
+module.exports = { app, supabase, JWT_SECRET };
