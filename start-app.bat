@@ -17,6 +17,31 @@ if errorlevel 1 (
 REM If script called with "jenkins" argument, run Jenkins directly
 if /I "%~1"=="jenkins" goto RUN_JENKINS
 
+REM Add helper commands for local Docker build and AKS deploy
+if /I "%~1"=="docker-build" (
+    echo Building backend Docker image locally...
+    docker build -t saferoute-backend:local -f backend/Dockerfile backend/
+    echo Building frontend Docker image locally...
+    docker build -t saferoute-frontend:local -f frontend/Dockerfile frontend/
+    echo Done.
+    pause
+    exit /b 0
+)
+
+if /I "%~1"=="deploy-aks" (
+    echo Deploying to AKS using az & kubectl (ensure AZ vars are set)...
+    az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%
+    az account set --subscription %AZURE_SUBSCRIPTION_ID%
+    az aks get-credentials --resource-group %AKS_RESOURCE_GROUP% --name %AKS_CLUSTER_NAME% --admin
+    REM create namespace and acr secret
+    kubectl apply -f k8s/namespace.yaml
+    kubectl create secret docker-registry acr-secret --docker-server=%ACR_LOGIN_SERVER% --docker-username=%ACR_USERNAME% --docker-password=%ACR_PASSWORD% --docker-email=ci@local -n saferoute --dry-run=client -o yaml | kubectl apply -f -
+    REM render templates locally using envsubst if available (Windows may require WSL or Git Bash)
+    echo Please use CI deployment for templating or run rendering in WSL/Git-Bash.
+    pause
+    exit /b 0
+)
+
 echo Starting Safe Route Navigator Application...
 echo.
 echo This will start both the backend API server and frontend application

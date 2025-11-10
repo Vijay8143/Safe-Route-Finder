@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+.git
+.env
+.DS_Store
+frontend/node_modules
+backend/node_modules
+k8s
