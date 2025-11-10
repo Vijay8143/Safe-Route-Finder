@@ -28,16 +28,107 @@ if /I "%~1"=="docker-build" (
     exit /b 0
 )
 
-if /I "%~1"=="deploy-aks" (
-    echo Deploying to AKS using az & kubectl (ensure AZ vars are set)...
-    az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%
-    az account set --subscription %AZURE_SUBSCRIPTION_ID%
-    az aks get-credentials --resource-group %AKS_RESOURCE_GROUP% --name %AKS_CLUSTER_NAME% --admin
-    REM create namespace and acr secret
-    kubectl apply -f k8s/namespace.yaml
-    kubectl create secret docker-registry acr-secret --docker-server=%ACR_LOGIN_SERVER% --docker-username=%ACR_USERNAME% --docker-password=%ACR_PASSWORD% --docker-email=ci@local -n saferoute --dry-run=client -o yaml | kubectl apply -f -
-    REM render templates locally using envsubst if available (Windows may require WSL or Git Bash)
-    echo Please use CI deployment for templating or run rendering in WSL/Git-Bash.
+REM <-- NEW: push built images to Docker Hub (builds then pushes). Usage: start-app.bat docker-push <tag>
+if /I "%~1"=="docker-push" (
+    REM require Docker Hub credentials as env vars
+    if "%DOCKERHUB_USERNAME%"=="" (
+        echo ERROR: Set DOCKERHUB_USERNAME environment variable before running.
+        pause
+        exit /b 1
+    )
+    if "%DOCKERHUB_PASSWORD%"=="" (
+        echo ERROR: Set DOCKERHUB_PASSWORD environment variable before running.
+        pause
+        exit /b 1
+    )
+    set TAG=%~2
+    if "%TAG%"=="" set TAG=latest
+
+    echo Building backend image...
+    docker build -t %DOCKERHUB_USERNAME%/safroute-backend:%TAG% -f backend/Dockerfile backend/
+    echo Building frontend image...
+    docker build -t %DOCKERHUB_USERNAME%/safroute-frontend:%TAG% -f frontend/Dockerfile frontend/
+
+    echo Logging in to Docker Hub...
+    echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
+    if errorlevel 1 (
+        echo ERROR: Docker login failed.
+        pause
+        exit /b 1
+    )
+
+    echo Pushing backend image...
+    docker push %DOCKERHUB_USERNAME%/safroute-backend:%TAG%
+    echo Pushing frontend image...
+    docker push %DOCKERHUB_USERNAME%/safroute-frontend:%TAG%
+
+    echo Done. Images pushed as %DOCKERHUB_USERNAME%/safroute-backend:%TAG% and %DOCKERHUB_USERNAME%/safroute-frontend:%TAG%
+    pause
+    exit /b 0
+)
+
+REM <-- NEW: pull images from Docker Hub and run them. Usage: start-app.bat run-hub <tag>
+if /I "%~1"=="run-hub" (
+    set TAG=%~2
+    if "%TAG%"=="" set TAG=latest
+    if "%DOCKERHUB_USERNAME%"=="" (
+        echo ERROR: Set DOCKERHUB_USERNAME environment variable before running.
+        pause
+        exit /b 1
+    )
+
+    echo Pulling backend image...
+    docker pull %DOCKERHUB_USERNAME%/safroute-backend:%TAG%
+    echo Pulling frontend image...
+    docker pull %DOCKERHUB_USERNAME%/safroute-frontend:%TAG%
+
+    echo Starting backend container...
+    docker run -d --name sr-backend -p 5000:5000 %DOCKERHUB_USERNAME%/safroute-backend:%TAG%
+    echo Waiting 5 seconds for backend to start...
+    timeout /t 5 /nobreak >nul
+
+    echo Starting frontend container...
+    docker run -d --name sr-frontend -p 3000:80 --link sr-backend:backend %DOCKERHUB_USERNAME%/safroute-frontend:%TAG%
+
+    echo.
+    echo Frontend: http://localhost:3000
+    echo Backend: http://localhost:5000
+    pause
+    exit /b 0
+)
+
+REM <-- NEW: tag & push existing local images to Docker Hub. Usage: start-app.bat docker-push-local <tag>
+if /I "%~1"=="docker-push-local" (
+    REM Usage: start-app.bat docker-push-local <tag>
+    if "%DOCKERHUB_USERNAME%"=="" (
+        echo ERROR: Set DOCKERHUB_USERNAME environment variable before running.
+        pause
+        exit /b 1
+    )
+    set TAG=%~2
+    if "%TAG%"=="" set TAG=latest
+
+    echo Tagging existing local images...
+    docker tag saferoute-backend:local %DOCKERHUB_USERNAME%/safroute-backend:%TAG% 2>nul || (
+        echo WARN: local image saferoute-backend:local not found
+    )
+    docker tag saferoute-frontend:local %DOCKERHUB_USERNAME%/safroute-frontend:%TAG% 2>nul || (
+        echo WARN: local image saferoute-frontend:local not found
+    )
+
+    echo Logging in to Docker Hub...
+    if "%DOCKERHUB_PASSWORD%"=="" (
+        echo Please enter Docker Hub password for %DOCKERHUB_USERNAME%
+        docker login -u %DOCKERHUB_USERNAME%
+    ) else (
+        echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
+    )
+
+    echo Pushing images...
+    docker push %DOCKERHUB_USERNAME%/safroute-backend:%TAG% || echo Push backend failed
+    docker push %DOCKERHUB_USERNAME%/safroute-frontend:%TAG% || echo Push frontend failed
+
+    echo Done.
     pause
     exit /b 0
 )

@@ -2,9 +2,9 @@
 FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ .
+COPY package*.json ./
+RUN npm install --legacy-peer-deps --no-audit --no-fund
+COPY . .
 RUN npm run build
 
 # serve stage

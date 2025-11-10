@@ -1,15 +1,23 @@
+# Use lightweight Node image
 FROM node:18-alpine
 
+# Set working directory
 WORKDIR /usr/src/app
 
-# copy package files and install production deps
-COPY backend/package*.json ./
-RUN npm ci --only=production
+# Copy package files first (for caching)
+COPY package*.json ./
 
-# copy app source
-COPY backend/ .
+# Install all dependencies inside container
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
+# Copy all source code
+COPY . .
+
+# Set environment variable for port
 ENV PORT=5000
+
+# Expose backend port
 EXPOSE 5000
 
+# Run the backend
 CMD ["npm", "start"]
