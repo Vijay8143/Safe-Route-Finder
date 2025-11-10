@@ -6,6 +6,7 @@ Safe Route Navigator empowers users to make informed decisions about their route
 
 ## Tech Stack
 
+
 ### Frontend
 - React.js 18
 - React Router DOM
