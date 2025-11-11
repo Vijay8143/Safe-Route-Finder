@@ -20,7 +20,14 @@ jobs:
       - name: Install and build frontend
         working-directory: ./frontend
         run: |
-          npm ci
+          # If package-lock.json exists use npm ci for reproducible installs
+          if [ -f package-lock.json ]; then
+            echo "Found package-lock.json — running npm ci"
+            npm ci
+          else
+            echo "No package-lock.json found — running npm install to generate lockfile"
+            npm install
+          fi
           npm run build
 
       - name: Login to Azure
