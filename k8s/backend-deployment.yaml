@@ -1,3 +1,4 @@
+# k8s/backend-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,12 +16,13 @@ spec:
     spec:
       containers:
         - name: backend
-          # Replace this image with your backend image
-          image: vijayreddygoli811/saferoute-backend:latest
+          image: saferoute-backend:local
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
+            - containerPort: 5000
           env:
+            - name: PORT
+              value: "5000"
             - name: POSTGRES_HOST
               value: postgres-svc
             - name: POSTGRES_PORT
@@ -54,7 +56,7 @@ spec:
   selector:
     app: safe-route-backend
   ports:
-    - port: 8000
-      targetPort: 8000
+    - port: 5000
+      targetPort: 5000
       protocol: TCP
   type: ClusterIP

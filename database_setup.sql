@@ -160,4 +160,4 @@ SELECT 'Sample Crimes:' as Info;
 SELECT id, category, severity, description, lat, lng, incident_date FROM crimes LIMIT 5;
 
 SELECT 'Sample Ratings:' as Info;
-SELECT id, safety_score, comment, time_of_day, lat, lng FROM ratings LIMIT 5; 
+SELECT id, safety_score, comment, time_of_day, lat, lng FROM ratings LIMIT 5;
