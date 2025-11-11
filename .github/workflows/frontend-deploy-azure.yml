@@ -95,13 +95,31 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.demo == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Demo — print phase markers
+      - name: Checkout repository (demo)
         run: |
-          echo "[DEMO] ✔ Repository checked out"
-          echo "[DEMO] ✔ Node and npm available: $(node --version) $(npm --version)"
-          echo "[DEMO] ✔ Frontend build completed"
-          echo "[DEMO] ✔ Azure login skipped (demo)"
-          echo "[DEMO] ✔ ACR login skipped (demo)"
-          echo "[DEMO] ✔ Image push skipped (demo)"
-          echo "[DEMO] ✔ Web App update skipped (demo)"
-          echo "[DEMO] All demo phases marked ✔"
+          echo "✔ [DEMO] Repository checked out"
+
+      - name: Set up Node.js (demo)
+        run: |
+          echo "✔ [DEMO] Node and npm available"
+
+      - name: Install and build frontend (demo)
+        run: |
+          echo "✔ [DEMO] Frontend build completed"
+
+      - name: Login to Azure (demo)
+        run: |
+          echo "✔ [DEMO] Azure login (skipped)"
+
+      - name: Login to ACR (docker) (demo)
+        run: |
+          echo "✔ [DEMO] ACR login (skipped)"
+
+      - name: Build and push Docker image to ACR (demo)
+        run: |
+          echo "✔ [DEMO] Image push (skipped)"
+
+      - name: Configure Web App to use new container image (demo)
+        run: |
+          echo "✔ [DEMO] Web App update (skipped)"
+
