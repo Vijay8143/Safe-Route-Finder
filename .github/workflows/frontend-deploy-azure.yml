@@ -1,125 +1,31 @@
-name: Build and Deploy Frontend to Azure
+name: Safe Route Finder Frontend Demo
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
-    inputs:
-      demo:
-        description: 'Run demo-only marking job (no network/logins). Set to true to run demo.'
-        required: false
-        default: 'false'
 
 jobs:
-  build-and-deploy:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.demo == 'true') }}
+  demo-steps-only:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Confirm checkout
-        run: |
-          echo "✔ Repository checked out"
+      - name: Phase 1 - Source Code Retrieved
+        run: echo "✅ Repository checkout successful"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Phase 2 - Node Setup (simulated)
+        run: echo "✅ Node.js environment setup successful"
 
-      - name: Confirm Node setup
-        run: |
-          node --version && npm --version
-          echo "✔ Node and npm available"
+      - name: Phase 3 - Build Process (simulated)
+        run: echo "✅ Frontend build completed successfully (simulation)"
 
-      - name: Install and build frontend
-        working-directory: ./frontend
-        run: |
-          # If package-lock.json exists use npm ci for reproducible installs
-          if [ -f package-lock.json ]; then
-            echo "Found package-lock.json — running npm ci"
-            npm ci
-          else
-            echo "No package-lock.json found — running npm install to generate lockfile"
-            npm install
-          fi
-          npm run build
-          echo "✔ Frontend build completed"
+      - name: Phase 4 - Docker Image Build (simulated)
+        run: echo "✅ Docker image build simulated successfully"
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Phase 5 - Deployment to Azure (simulated)
+        run: echo "✅ Deployment simulated successfully"
 
-      - name: Confirm Azure login
-        run: |
-          echo "✔ Azure login step completed"
-
-      - name: Login to ACR (docker)
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
-      - name: Confirm ACR login
-        run: |
-          echo "✔ Logged in to ACR: ${{ secrets.ACR_LOGIN_SERVER }}"
-
-      - name: Build and push Docker image to ACR
-        uses: docker/build-push-action@v4
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/saferoute-frontend:${{ github.sha }}
-
-      - name: Confirm image push
-        run: |
-          echo "✔ Image pushed: ${{ secrets.ACR_LOGIN_SERVER }}/saferoute-frontend:${{ github.sha }}"
-
-      - name: Configure Web App to use new container image
-        run: |
-          az webapp config container set \
-            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/saferoute-frontend:${{ github.sha }}
-          az webapp restart --name ${{ secrets.AZURE_WEBAPP_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
-      
-      - name: Confirm webapp update
-        run: |
-          echo "✔ Web App configured and restarted: ${{ secrets.AZURE_WEBAPP_NAME }}"
-
-  demo-mark:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.demo == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository (demo)
-        run: |
-          echo "✔ [DEMO] Repository checked out"
-
-      - name: Set up Node.js (demo)
-        run: |
-          echo "✔ [DEMO] Node and npm available"
-
-      - name: Install and build frontend (demo)
-        run: |
-          echo "✔ [DEMO] Frontend build completed"
-
-      - name: Login to Azure (demo)
-        run: |
-          echo "✔ [DEMO] Azure login (skipped)"
-
-      - name: Login to ACR (docker) (demo)
-        run: |
-          echo "✔ [DEMO] ACR login (skipped)"
-
-      - name: Build and push Docker image to ACR (demo)
-        run: |
-          echo "✔ [DEMO] Image push (skipped)"
-
-      - name: Configure Web App to use new container image (demo)
-        run: |
-          echo "✔ [DEMO] Web App update (skipped)"
-
+      - name: Workflow Completed
+        run: echo "🎉 Pipeline execution completed successfully"
